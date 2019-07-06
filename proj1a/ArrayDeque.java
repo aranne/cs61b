@@ -9,17 +9,38 @@ public class ArrayDeque<Generic> {
     private Generic[] items;
     private int size;
     private static final int RFactor = 2;
+    private int nextFirst;
+    private int nextLast;
 
     /** initiate an empty ArrayDeque. */
     public ArrayDeque() {
         items = (Generic[]) new Object[8]; // The starting size of this deque.
         size = 0;
+        nextFirst = 3;
+        nextLast = 4;
     }
 
     /** Resize the underlying deque to the target capacity. */
     public void resize(int capacity) {
         Generic[] a = (Generic[]) new Object[capacity];
-        System.arraycopy(items, 0, a, 0, size);
+        // In these two cases, we need to copy an array through a circle from nextFirst to items.length to nextLast.
+        if (nextLast - nextFirst == 1 || (nextLast <= nextFirst && size != items.length)) {
+            // put all items in the middle of the new capacity deque in increasing direction.
+            System.arraycopy(items, nextFirst + 1, a, (capacity - size) / 2, items.length - nextFirst - 1);
+            System.arraycopy(items, 0, a, ((capacity - size) / 2) + (items.length - nextFirst - 1), nextLast);
+        }
+        // In this case, we just need to copy an array from nextFirst to nextLast.
+        if ((nextLast == 0 && nextFirst == items.length - 1) || (nextFirst < nextLast && size != items.length)) {
+            int first = nextFirst;
+            int last = nextLast;
+            if (nextLast == 0) {   // if deque is full.
+                first = -1;
+                last = items.length;
+            }
+            System.arraycopy(items, first + 1, a, (capacity - size) / 2, last - first - 1);
+        }
+        nextFirst = (capacity - size) / 2 - 1;
+        nextLast = (capacity - size) / 2 + size;
         items = a;
     }
 
@@ -28,9 +49,12 @@ public class ArrayDeque<Generic> {
         if (size == items.length) {
             resize(items.length * RFactor);
         }
-        Generic[] a = (Generic[]) new Object[items.length];
-        a[0] = item;
-        System.arraycopy(items, 0, a, 1, size);
+        items[nextFirst] = item;
+        if (nextFirst == 0) {
+            nextFirst = items.length - 1;
+        } else {
+            nextFirst -= 1;
+        }
         size += 1;
     }
 
@@ -39,7 +63,12 @@ public class ArrayDeque<Generic> {
         if (size == items.length) {
             resize(items.length * RFactor);
         }
-        items[size] = item;
+        items[nextLast] = item;
+        if (nextLast == items.length - 1) {
+            nextLast = 0;
+        } else {
+            nextLast += 1;
+        }
         size += 1;
     }
 
@@ -58,10 +87,31 @@ public class ArrayDeque<Generic> {
         if (size == 0) {
             System.out.println("This is an empty deque.");
         }
-        for (int i = 0; i < size; i += 1) {
-            System.out.print(items[i]);
-            if (i != size - 1) {
-                System.out.print(" ");
+        // if deque is full but with wrong order OR deque is not full and with wrong order.
+        if (nextLast - nextFirst == 1 || (nextLast <= nextFirst && size != items.length)) {
+            for (int i = nextFirst + 1; i < items.length; i += 1) {
+                System.out.print(items[i] + " ");
+            }
+            for (int i = 0; i < nextLast; i += 1) {
+                System.out.print(items[i]);
+                if (i != nextLast - 1) {
+                    System.out.print(" ");
+                }
+            }
+        }
+        // if deque is full and with right order OR the deque is with right order.
+        if ((nextFirst == items.length - 1 && nextLast == 0) || (nextFirst < nextLast && size != items.length)) {
+            int first = nextFirst;
+            int last = nextLast;
+            if (nextLast == 0) {    // if deque is full.
+                first = -1;
+                last = items.length;
+            }
+            for (int i = first + 1; i < last; i += 1) {
+                System.out.print(items[i]);
+                if (i != last - 1) {
+                    System.out.print(" ");
+                }
             }
         }
     }
@@ -73,10 +123,16 @@ public class ArrayDeque<Generic> {
         if (size == 0) {
             return null;
         }
-        Generic firstItem = items[0];
-        Generic[] a = (Generic[]) new Object[items.length];
-        System.arraycopy(items, 1, a, 0, size - 1);
-        items = a;
+        Generic firstItem;
+        if (nextFirst == items.length - 1) {
+            firstItem = items[0];
+            items[0] = null;                    // nulling out the deleted item.
+            nextFirst = 0;
+        } else {
+            firstItem = items[nextFirst + 1];
+            items[nextFirst + 1] = null;
+            nextFirst += 1;
+        }
         size -= 1;
         if ((double)size / items.length <= 0.25 && items.length >= 16) {
             resize(items.length / RFactor);
@@ -91,8 +147,16 @@ public class ArrayDeque<Generic> {
         if (size == 0) {
             return null;
         }
-        Generic lastItem = items[size - 1];
-        items[size - 1] = null;
+        Generic lastItem;
+        if (nextLast == 0) {
+            lastItem = items[items.length - 1];
+            items[items.length - 1] = null;
+            nextLast = items.length - 1;
+        } else {
+            lastItem = items[nextLast - 1];
+            items[nextLast - 1] = null;
+            nextLast -= 1;
+        }
         size -= 1;
         if ((double)size / items.length <= 0.25 && items.length >= 16) {
             resize(items.length / RFactor);
@@ -105,6 +169,10 @@ public class ArrayDeque<Generic> {
         if (index >= size) {
             return null;
         }
-        return items[index];
+        if (nextFirst + index + 1 < items.length) {
+            return items[(nextFirst + 1) + index];
+        }
+        return items[(index + 1) - (items.length - (nextFirst + 1)) - 1];
+
     }
 }
