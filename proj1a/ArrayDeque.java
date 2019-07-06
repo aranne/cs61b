@@ -1,6 +1,11 @@
 /**
  * Deque means doubled-ended queue, which is a sequence containers with
  * dynamic size that can be expanded or contracted on both ends(front or back).
+ * This array based deque is circular, which means
+ * nextFirst pointer points at the index that next first item will be put in and
+ * nextLast pointer points at the index that next last item will be put in.
+ * If nextFirst pointer is at position zero and you addFirst(),
+ * nextFirst pointer should look back around to the end of the array. So does nextLast pointer.
  * @param <Generic>
  * @author aranne
  */
