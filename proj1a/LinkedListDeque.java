@@ -152,5 +152,3 @@ public class LinkedListDeque<T> {
         return getRecursionHelper(s.next, index - 1);
     }
 }
-
-
