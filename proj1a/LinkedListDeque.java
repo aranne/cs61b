@@ -22,14 +22,19 @@ public class LinkedListDeque<Generic> {
     private StuffNode sentinel;
     private int size;
 
-    /** Instantiates: creates an empty deque. */
+    /**
+     * Instantiates: creates an empty deque.
+     */
     public LinkedListDeque() {
         sentinel = new StuffNode(null, null);
         sentinel.next = sentinel;
         sentinel.prev = sentinel;
         size = 0;
     }
-    /** Instantiate this deque with x of generic data type. */
+
+    /**
+     * Instantiate this deque with x of generic data type.
+     */
     public LinkedListDeque(Generic x) {
         sentinel = new StuffNode(null, null);
         sentinel.next = new StuffNode(x, sentinel);
@@ -38,7 +43,9 @@ public class LinkedListDeque<Generic> {
         size = 1;
     }
 
-    /** Adds a generic type item to the front of this deque. */
+    /**
+     * Adds a generic type item to the front of this deque.
+     */
     public void addFirst(Generic item) {
         StuffNode p = sentinel.next;
         sentinel.next = new StuffNode(item, p);
@@ -47,7 +54,9 @@ public class LinkedListDeque<Generic> {
         size += 1;
     }
 
-    /** Adds a generic type item to the back of this deque. */
+    /**
+     * Adds a generic type item to the back of this deque.
+     */
     public void addLast(Generic item) {
         StuffNode p = sentinel.prev;
         sentinel.prev = new StuffNode(item, sentinel);
@@ -56,17 +65,23 @@ public class LinkedListDeque<Generic> {
         size += 1;
     }
 
-    /** Returns true if deque is empty, false otherwise. */
+    /**
+     * Returns true if deque is empty, false otherwise.
+     */
     public boolean isEmpty() {
         return sentinel.next.item == null;
     }
 
-    /** Returns the size of this deque. */
+    /**
+     * Returns the size of this deque.
+     */
     public int size() {
         return size;
     }
 
-    /** Prints the items in this deque from first to last, separated by space. */
+    /**
+     * Prints the items in this deque from first to last, separated by space.
+     */
     public void printDeque() {
         if (sentinel.next.item == null) {
             System.out.println("This is an empty deque");
@@ -76,12 +91,15 @@ public class LinkedListDeque<Generic> {
             System.out.print(p.item);
             if (p.next.item != null) {
                 System.out.print(" ");
+            } else {
+                System.out.println();
             }
             p = p.next;
         }
     }
 
-    /** Removes and returns the first item in this deque.
+    /**
+     * Removes and returns the first item in this deque.
      * If no such item exists, returns null.
      */
     public Generic removeFirst() {
@@ -91,7 +109,8 @@ public class LinkedListDeque<Generic> {
         return p.item;
     }
 
-    /** Removes and returns the last item in this deque.
+    /**
+     * Removes and returns the last item in this deque.
      * If no such item exists, returns null.
      */
     public Generic removeLast() {
@@ -101,7 +120,8 @@ public class LinkedListDeque<Generic> {
         return p.item;
     }
 
-    /** Returns the item at the given index, where 0 is the front, 1 is the next item, and so forth.
+    /**
+     * Returns the item at the given index, where 0 is the front, 1 is the next item, and so forth.
      * If no such item exists, returns null.
      */
     public Generic get(int index) {
@@ -116,18 +136,24 @@ public class LinkedListDeque<Generic> {
         return p.item;
     }
 
-    /** Implements get() using recursion. */
+    /**
+     * Implements get() using recursion.
+     */
     public Generic getRecursion(int index) {
         return getRecursionHelper(sentinel.next, index);
     }
-    /** A helper method of getRecursion(). */
-    private static Generic getRecursionHelper(StuffNode s, int index) {
+
+    /**
+     * A helper method of getRecursion().
+     */
+    private Generic getRecursionHelper(StuffNode s, int index) {
         if (index == 0) {
             return s.item;
         } else if (s.item == null) {
             return null;
         }
-        return getRecursionHelper(s.next, index-1);
+        return getRecursionHelper(s.next, index - 1);
     }
+}
 
 
