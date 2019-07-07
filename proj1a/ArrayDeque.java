@@ -13,46 +13,43 @@ public class ArrayDeque<T> {
     /** This is a generic array based deque. */
     private T[] items;
     private int size;
-    private static final int RFACTOR = 2;
     private int nextFirst;
     private int nextLast;
+    private static final int RFACTOR = 2;
+    private static final int INIT_CAPACITY = 8;
+    private static final double MIN_USAGE_RATIO = 0.25;
 
     /** initiate an empty ArrayDeque. */
     public ArrayDeque() {
-        items = (T[]) new Object[8]; // The starting size of this deque.
+        items = (T[]) new Object[INIT_CAPACITY]; // The starting size of this deque.
         size = 0;
-        nextFirst = 3;
-        nextLast = 4;
+        nextFirst = INIT_CAPACITY / 2;
+        nextLast = nextFirst + 1;
+    }
+
+    /** Compute the index in a circular array. */
+    private int minusOne(int index) {
+        return (index - 1 + items.length) % items.length;
+    }
+
+    /** Compute the index in a circular array. */
+    private int plusOne(int index) {
+        return (index + 1) % items.length;
     }
 
     /** Resize the underlying deque to the target capacity. */
     private void resize(int capacity) {
-        T[] a = (T[]) new Object[capacity];
-        // In these two cases, we need to copy an array through a circle
-        // from nextFirst to items.length to nextLast.
-        if (nextLast - nextFirst == 1 || (nextLast <= nextFirst && size != items.length)) {
-            // put all items in the middle of the new capacity deque in increasing direction.
-            // the start position:
-            int destPos = (capacity - size) / 2;
-            // the length of copy:
-            int len = items.length - nextFirst - 1;
-            System.arraycopy(items, nextFirst + 1, a, destPos, len);
-            System.arraycopy(items, 0, a, destPos + len, nextLast);
+        T[] newArray = (T[]) new Object[capacity];
+        // The starting position of items array.
+        int curr = plusOne(nextFirst);
+        // Copy all items in items array to newArray, in which the starting position is 0.
+        for (int i = 0; i < size; i += 1) {
+            newArray[i] = items[curr];
+            curr = plusOne(curr);
         }
-        // In this case, we just need to copy an array from nextFirst to nextLast.
-        boolean isFull = (nextLast == 0 && nextFirst == items.length - 1);
-        if (isFull || (nextFirst < nextLast && size != items.length)) {
-            int first = nextFirst;
-            int last = nextLast;
-            if (nextLast == 0) {   // if deque is full.
-                first = -1;
-                last = items.length;
-            }
-            System.arraycopy(items, first + 1, a, (capacity - size) / 2, last - first - 1);
-        }
-        nextFirst = (capacity - size) / 2 - 1;
-        nextLast = (capacity - size) / 2 + size;
-        items = a;
+        items = newArray;
+        nextFirst = capacity - 1;
+        nextLast = size;
     }
 
     /** Adds an item of type Generic to the front of this deque. */
@@ -61,11 +58,7 @@ public class ArrayDeque<T> {
             resize(items.length * RFACTOR);
         }
         items[nextFirst] = item;
-        if (nextFirst == 0) {
-            nextFirst = items.length - 1;
-        } else {
-            nextFirst -= 1;
-        }
+        nextFirst = minusOne(nextFirst);
         size += 1;
     }
 
@@ -75,11 +68,7 @@ public class ArrayDeque<T> {
             resize(items.length * RFACTOR);
         }
         items[nextLast] = item;
-        if (nextLast == items.length - 1) {
-            nextLast = 0;
-        } else {
-            nextLast += 1;
-        }
+        nextLast = plusOne(nextLast);
         size += 1;
     }
 
@@ -98,34 +87,13 @@ public class ArrayDeque<T> {
         if (size == 0) {
             System.out.println("This is an empty deque.");
         }
-        // if deque is full but with wrong order OR deque is not full and with wrong order.
-        if (nextLast - nextFirst == 1 || (nextLast <= nextFirst && size != items.length)) {
-            for (int i = nextFirst + 1; i < items.length; i += 1) {
-                System.out.print(items[i] + " ");
-            }
-            for (int i = 0; i < nextLast; i += 1) {
-                System.out.print(items[i]);
-                if (i != nextLast - 1) {
-                    System.out.print(" ");
-                }
-            }
+        int curr = plusOne(nextFirst);
+        // Prints all items in items array.
+        for (int i = 0; i < size; i += 1) {
+            System.out.print(items[curr] + " ");
+            curr = plusOne(curr);
         }
-        // if deque is full and with right order OR the deque is with right order.
-        boolean isFull = (nextLast == 0 && nextFirst == items.length - 1);
-        if (isFull || (nextFirst < nextLast && size != items.length)) {
-            int first = nextFirst;
-            int last = nextLast;
-            if (nextLast == 0) {    // if deque is full.
-                first = -1;
-                last = items.length;
-            }
-            for (int i = first + 1; i < last; i += 1) {
-                System.out.print(items[i]);
-                if (i != last - 1) {
-                    System.out.print(" ");
-                }
-            }
-        }
+        System.out.println();
     }
 
     /** Removes and returns the item at the front of this deque.
@@ -135,20 +103,15 @@ public class ArrayDeque<T> {
         if (size == 0) {
             return null;
         }
-        T firstItem;
-        if (nextFirst == items.length - 1) {
-            firstItem = items[0];
-            items[0] = null;                    // nulling out the deleted item.
-            nextFirst = 0;
-        } else {
-            firstItem = items[nextFirst + 1];
-            items[nextFirst + 1] = null;
-            nextFirst += 1;
-        }
+        nextFirst = plusOne(nextFirst);
+        T firstItem = items[nextFirst];
+        items[nextFirst] = null;        // Nulling out the deleted item.
         size -= 1;
-        if ((double) size / items.length <= 0.25 && items.length >= 16) {
+
+        if ((double) size / items.length <= MIN_USAGE_RATIO && items.length >= INIT_CAPACITY * 2) {
             resize(items.length / RFACTOR);
         }
+
         return firstItem;
     }
 
@@ -159,20 +122,15 @@ public class ArrayDeque<T> {
         if (size == 0) {
             return null;
         }
-        T lastItem;
-        if (nextLast == 0) {
-            lastItem = items[items.length - 1];
-            items[items.length - 1] = null;
-            nextLast = items.length - 1;
-        } else {
-            lastItem = items[nextLast - 1];
-            items[nextLast - 1] = null;
-            nextLast -= 1;
-        }
+        nextLast = minusOne(nextLast);
+        T lastItem = items[nextLast];
+        items[nextLast] = null;
         size -= 1;
-        if ((double) size / items.length <= 0.25 && items.length >= 16) {
+
+        if ((double) size / items.length <= MIN_USAGE_RATIO && items.length >= INIT_CAPACITY * 2) {
             resize(items.length / RFACTOR);
         }
+
         return lastItem;
     }
 
@@ -181,9 +139,7 @@ public class ArrayDeque<T> {
         if (index >= size) {
             return null;
         }
-        if (nextFirst + index + 1 < items.length) {
-            return items[(nextFirst + 1) + index];
-        }
-        return items[(index + 1) - (items.length - (nextFirst + 1)) - 1];
+        int referIndex = (nextFirst + index + 1) % items.length;
+        return items[referIndex];
     }
 }
