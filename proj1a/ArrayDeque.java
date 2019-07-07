@@ -6,12 +6,12 @@
  * nextLast pointer points at the index that next last item will be put in.
  * If nextFirst pointer is at position zero and you addFirst(),
  * nextFirst pointer should look back around to the end of the array. So does nextLast pointer.
- * @param <Generic>
+ * @param <T>
  * @author aranne
  */
-public class ArrayDeque<Generic> {
+public class ArrayDeque<T> {
     /** This is a generic array based deque. */
-    private Generic[] items;
+    private T[] items;
     private int size;
     private static final int RFACTOR = 2;
     private int nextFirst;
@@ -19,7 +19,7 @@ public class ArrayDeque<Generic> {
 
     /** initiate an empty ArrayDeque. */
     public ArrayDeque() {
-        items = (Generic[]) new Object[8]; // The starting size of this deque.
+        items = (T[]) new Object[8]; // The starting size of this deque.
         size = 0;
         nextFirst = 3;
         nextLast = 4;
@@ -27,7 +27,7 @@ public class ArrayDeque<Generic> {
 
     /** Resize the underlying deque to the target capacity. */
     public void resize(int capacity) {
-        Generic[] a = (Generic[]) new Object[capacity];
+        T[] a = (T[]) new Object[capacity];
         // In these two cases, we need to copy an array through a circle
         // from nextFirst to items.length to nextLast.
         if (nextLast - nextFirst == 1 || (nextLast <= nextFirst && size != items.length)) {
@@ -56,7 +56,7 @@ public class ArrayDeque<Generic> {
     }
 
     /** Adds an item of type Generic to the front of this deque. */
-    public void addFirst(Generic item) {
+    public void addFirst(T item) {
         if (size == items.length) {
             resize(items.length * RFACTOR);
         }
@@ -70,7 +70,7 @@ public class ArrayDeque<Generic> {
     }
 
     /** Adds an item of type Generic to the back of this deque. */
-    public void addLast(Generic item) {
+    public void addLast(T item) {
         if (size == items.length) {
             resize(items.length * RFACTOR);
         }
@@ -131,11 +131,11 @@ public class ArrayDeque<Generic> {
     /** Removes and returns the item at the front of this deque.
      *  If no such item exists, returns null.
      */
-    public Generic removeFirst() {
+    public T removeFirst() {
         if (size == 0) {
             return null;
         }
-        Generic firstItem;
+        T firstItem;
         if (nextFirst == items.length - 1) {
             firstItem = items[0];
             items[0] = null;                    // nulling out the deleted item.
@@ -146,7 +146,7 @@ public class ArrayDeque<Generic> {
             nextFirst += 1;
         }
         size -= 1;
-        if ((double)size / items.length <= 0.25 && items.length >= 16) {
+        if ((double) size / items.length <= 0.25 && items.length >= 16) {
             resize(items.length / RFACTOR);
         }
         return firstItem;
@@ -155,11 +155,11 @@ public class ArrayDeque<Generic> {
     /** Removes and returns the item at the back of the deque.
      *  If no such item exists, returns null.
      */
-    public Generic removeLast() {
+    public T removeLast() {
         if (size == 0) {
             return null;
         }
-        Generic lastItem;
+        T lastItem;
         if (nextLast == 0) {
             lastItem = items[items.length - 1];
             items[items.length - 1] = null;
@@ -170,14 +170,14 @@ public class ArrayDeque<Generic> {
             nextLast -= 1;
         }
         size -= 1;
-        if ((double)size / items.length <= 0.25 && items.length >= 16) {
+        if ((double) size / items.length <= 0.25 && items.length >= 16) {
             resize(items.length / RFACTOR);
         }
         return lastItem;
     }
 
     /** Gets the item at the given index. If no such item exists, returns null. */
-    public Generic get(int index) {
+    public T get(int index) {
         if (index >= size) {
             return null;
         }

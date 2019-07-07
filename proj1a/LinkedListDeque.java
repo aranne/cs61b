@@ -33,17 +33,6 @@ public class LinkedListDeque<T> {
     }
 
     /**
-     * Instantiate this deque with x of generic data type.
-     */
-    public LinkedListDeque(T x) {
-        sentinel = new StuffNode(null, null);
-        sentinel.next = new StuffNode(x, sentinel);
-        sentinel.prev = sentinel.next;
-        sentinel.next.prev = sentinel;
-        size = 1;
-    }
-
-    /**
      * Adds a generic type item to the front of this deque.
      */
     public void addFirst(T item) {
@@ -106,6 +95,7 @@ public class LinkedListDeque<T> {
         StuffNode p = sentinel.next;
         sentinel.next = p.next;
         p.next.prev = sentinel;
+        size -= 1;
         return p.item;
     }
 
@@ -117,6 +107,7 @@ public class LinkedListDeque<T> {
         StuffNode p = sentinel.prev;
         p.prev.next = sentinel;
         sentinel.prev = p.prev;
+        size -= 1;
         return p.item;
     }
 
