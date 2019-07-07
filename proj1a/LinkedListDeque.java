@@ -69,11 +69,9 @@ public class LinkedListDeque<T> {
 
     /**
      * Prints the items in this deque from first to last, separated by space.
+     * If it's an empty deque, prints nothing.
      */
     public void printDeque() {
-        if (sentinel.next.item == null) {
-            System.out.println("This is an empty deque");
-        }
         StuffNode p = sentinel.next;
         while (p != sentinel) {
             System.out.print(p.item + " ");
