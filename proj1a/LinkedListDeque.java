@@ -92,6 +92,9 @@ public class LinkedListDeque<T> {
      * If no such item exists, returns null.
      */
     public T removeFirst() {
+        if (sentinel.next.item == null) {
+            return null;
+        }
         StuffNode p = sentinel.next;
         sentinel.next = p.next;
         p.next.prev = sentinel;
@@ -104,6 +107,9 @@ public class LinkedListDeque<T> {
      * If no such item exists, returns null.
      */
     public T removeLast() {
+        if (sentinel.prev.item == null) {
+            return null;
+        }
         StuffNode p = sentinel.prev;
         p.prev.next = sentinel;
         sentinel.prev = p.prev;

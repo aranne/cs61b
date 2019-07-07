@@ -26,7 +26,7 @@ public class ArrayDeque<T> {
     }
 
     /** Resize the underlying deque to the target capacity. */
-    public void resize(int capacity) {
+    private void resize(int capacity) {
         T[] a = (T[]) new Object[capacity];
         // In these two cases, we need to copy an array through a circle
         // from nextFirst to items.length to nextLast.
