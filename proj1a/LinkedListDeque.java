@@ -13,7 +13,8 @@ public class LinkedListDeque<T> {
         private StuffNode next;
         private StuffNode prev;
 
-        public StuffNode(T i, StuffNode n) {
+        public StuffNode(StuffNode p, T i, StuffNode n) {
+            prev = p;
             item = i;
             next = n;
         }
@@ -26,7 +27,7 @@ public class LinkedListDeque<T> {
      * Instantiates: creates an empty deque.
      */
     public LinkedListDeque() {
-        sentinel = new StuffNode(null, null);
+        sentinel = new StuffNode(null, null, null);
         sentinel.next = sentinel;
         sentinel.prev = sentinel;
         size = 0;
@@ -36,10 +37,9 @@ public class LinkedListDeque<T> {
      * Adds a generic type item to the front of this deque.
      */
     public void addFirst(T item) {
-        StuffNode p = sentinel.next;
-        sentinel.next = new StuffNode(item, p);
-        p.prev = sentinel.next;
-        sentinel.next.prev = sentinel;
+        StuffNode p = new StuffNode(sentinel, item, sentinel.next);
+        sentinel.next.prev = p;
+        sentinel.next = p;
         size += 1;
     }
 
@@ -47,10 +47,9 @@ public class LinkedListDeque<T> {
      * Adds a generic type item to the back of this deque.
      */
     public void addLast(T item) {
-        StuffNode p = sentinel.prev;
-        sentinel.prev = new StuffNode(item, sentinel);
-        sentinel.prev.prev = p;
-        p.next = sentinel.prev;
+        StuffNode p =  new StuffNode(sentinel.prev, item, sentinel);
+        sentinel.prev.next = p;
+        sentinel.prev = p;
         size += 1;
     }
 
@@ -58,7 +57,7 @@ public class LinkedListDeque<T> {
      * Returns true if deque is empty, false otherwise.
      */
     public boolean isEmpty() {
-        return sentinel.next.item == null;
+        return size == 0;
     }
 
     /**
@@ -76,15 +75,11 @@ public class LinkedListDeque<T> {
             System.out.println("This is an empty deque");
         }
         StuffNode p = sentinel.next;
-        while (p.item != null) {
-            System.out.print(p.item);
-            if (p.next.item != null) {
-                System.out.print(" ");
-            } else {
-                System.out.println();
-            }
+        while (p != sentinel) {
+            System.out.print(p.item + " ");
             p = p.next;
         }
+        System.out.println();
     }
 
     /**
@@ -92,14 +87,14 @@ public class LinkedListDeque<T> {
      * If no such item exists, returns null.
      */
     public T removeFirst() {
-        if (sentinel.next.item == null) {
+        if (isEmpty()) {
             return null;
         }
-        StuffNode p = sentinel.next;
-        sentinel.next = p.next;
-        p.next.prev = sentinel;
+        T first = sentinel.next.item;
+        sentinel.next =sentinel.next.next;
+        sentinel.next.prev = sentinel;
         size -= 1;
-        return p.item;
+        return first;
     }
 
     /**
@@ -107,14 +102,14 @@ public class LinkedListDeque<T> {
      * If no such item exists, returns null.
      */
     public T removeLast() {
-        if (sentinel.prev.item == null) {
+        if (isEmpty()) {
             return null;
         }
-        StuffNode p = sentinel.prev;
-        p.prev.next = sentinel;
-        sentinel.prev = p.prev;
+        T last = sentinel.prev.item;
+        sentinel.prev = sentinel.prev.prev;
+        sentinel.prev.next = sentinel;
         size -= 1;
-        return p.item;
+        return last;
     }
 
     /**
@@ -122,11 +117,11 @@ public class LinkedListDeque<T> {
      * If no such item exists, returns null.
      */
     public T get(int index) {
+        if (index >= size) {
+            return null;
+        }
         StuffNode p = sentinel.next;
-        while (index != 0) {
-            if (p.item == null) {
-                return null;
-            }
+        while (index > 0) {
             p = p.next;
             index -= 1;
         }
@@ -137,6 +132,9 @@ public class LinkedListDeque<T> {
      * Implements get() using recursion.
      */
     public T getRecursive(int index) {
+        if (index >= size) {
+            return null;
+        }
         return getRecursionHelper(sentinel.next, index);
     }
 
@@ -146,8 +144,6 @@ public class LinkedListDeque<T> {
     private T getRecursionHelper(StuffNode s, int index) {
         if (index == 0) {
             return s.item;
-        } else if (s.item == null) {
-            return null;
         }
         return getRecursionHelper(s.next, index - 1);
     }
