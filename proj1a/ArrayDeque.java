@@ -13,7 +13,7 @@ public class ArrayDeque<Generic> {
     /** This is a generic array based deque. */
     private Generic[] items;
     private int size;
-    private static final int RFactor = 2;
+    private static final int RFACTOR = 2;
     private int nextFirst;
     private int nextLast;
 
@@ -28,14 +28,20 @@ public class ArrayDeque<Generic> {
     /** Resize the underlying deque to the target capacity. */
     public void resize(int capacity) {
         Generic[] a = (Generic[]) new Object[capacity];
-        // In these two cases, we need to copy an array through a circle from nextFirst to items.length to nextLast.
+        // In these two cases, we need to copy an array through a circle
+        // from nextFirst to items.length to nextLast.
         if (nextLast - nextFirst == 1 || (nextLast <= nextFirst && size != items.length)) {
             // put all items in the middle of the new capacity deque in increasing direction.
-            System.arraycopy(items, nextFirst + 1, a, (capacity - size) / 2, items.length - nextFirst - 1);
-            System.arraycopy(items, 0, a, ((capacity - size) / 2) + (items.length - nextFirst - 1), nextLast);
+            // the start position:
+            int destPos = (capacity - size) / 2;
+            // the length of copy:
+            int len = items.length - nextFirst - 1;
+            System.arraycopy(items, nextFirst + 1, a, destPos, len);
+            System.arraycopy(items, 0, a, destPos + len, nextLast);
         }
         // In this case, we just need to copy an array from nextFirst to nextLast.
-        if ((nextLast == 0 && nextFirst == items.length - 1) || (nextFirst < nextLast && size != items.length)) {
+        boolean isFull = (nextLast == 0 && nextFirst == items.length - 1);
+        if (isFull || (nextFirst < nextLast && size != items.length)) {
             int first = nextFirst;
             int last = nextLast;
             if (nextLast == 0) {   // if deque is full.
@@ -52,7 +58,7 @@ public class ArrayDeque<Generic> {
     /** Adds an item of type Generic to the front of this deque. */
     public void addFirst(Generic item) {
         if (size == items.length) {
-            resize(items.length * RFactor);
+            resize(items.length * RFACTOR);
         }
         items[nextFirst] = item;
         if (nextFirst == 0) {
@@ -66,7 +72,7 @@ public class ArrayDeque<Generic> {
     /** Adds an item of type Generic to the back of this deque. */
     public void addLast(Generic item) {
         if (size == items.length) {
-            resize(items.length * RFactor);
+            resize(items.length * RFACTOR);
         }
         items[nextLast] = item;
         if (nextLast == items.length - 1) {
@@ -105,7 +111,8 @@ public class ArrayDeque<Generic> {
             }
         }
         // if deque is full and with right order OR the deque is with right order.
-        if ((nextFirst == items.length - 1 && nextLast == 0) || (nextFirst < nextLast && size != items.length)) {
+        boolean isFull = (nextLast == 0 && nextFirst == items.length - 1);
+        if (isFull || (nextFirst < nextLast && size != items.length)) {
             int first = nextFirst;
             int last = nextLast;
             if (nextLast == 0) {    // if deque is full.
@@ -140,7 +147,7 @@ public class ArrayDeque<Generic> {
         }
         size -= 1;
         if ((double)size / items.length <= 0.25 && items.length >= 16) {
-            resize(items.length / RFactor);
+            resize(items.length / RFACTOR);
         }
         return firstItem;
     }
@@ -164,7 +171,7 @@ public class ArrayDeque<Generic> {
         }
         size -= 1;
         if ((double)size / items.length <= 0.25 && items.length >= 16) {
-            resize(items.length / RFactor);
+            resize(items.length / RFACTOR);
         }
         return lastItem;
     }
@@ -178,6 +185,5 @@ public class ArrayDeque<Generic> {
             return items[(nextFirst + 1) + index];
         }
         return items[(index + 1) - (items.length - (nextFirst + 1)) - 1];
-
     }
 }

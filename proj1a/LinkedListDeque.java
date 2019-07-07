@@ -1,19 +1,19 @@
 /**
  * Deque means doubled-ended queue, which is a sequence containers with
  * dynamic size that can be expanded or contracted on both ends(front or back).
- * @param <Generic>
+ * @param <T>
  * @author aranne
  */
-public class LinkedListDeque<Generic> {
+public class LinkedListDeque<T> {
     /**
      * This is a generic linked list class.
      */
     private class StuffNode {
-        public Generic item;
-        public StuffNode next;
-        public StuffNode prev;
+        private T item;
+        private StuffNode next;
+        private StuffNode prev;
 
-        public StuffNode(Generic i, StuffNode n) {
+        public StuffNode(T i, StuffNode n) {
             item = i;
             next = n;
         }
@@ -35,7 +35,7 @@ public class LinkedListDeque<Generic> {
     /**
      * Instantiate this deque with x of generic data type.
      */
-    public LinkedListDeque(Generic x) {
+    public LinkedListDeque(T x) {
         sentinel = new StuffNode(null, null);
         sentinel.next = new StuffNode(x, sentinel);
         sentinel.prev = sentinel.next;
@@ -46,7 +46,7 @@ public class LinkedListDeque<Generic> {
     /**
      * Adds a generic type item to the front of this deque.
      */
-    public void addFirst(Generic item) {
+    public void addFirst(T item) {
         StuffNode p = sentinel.next;
         sentinel.next = new StuffNode(item, p);
         p.prev = sentinel.next;
@@ -57,7 +57,7 @@ public class LinkedListDeque<Generic> {
     /**
      * Adds a generic type item to the back of this deque.
      */
-    public void addLast(Generic item) {
+    public void addLast(T item) {
         StuffNode p = sentinel.prev;
         sentinel.prev = new StuffNode(item, sentinel);
         sentinel.prev.prev = p;
@@ -102,7 +102,7 @@ public class LinkedListDeque<Generic> {
      * Removes and returns the first item in this deque.
      * If no such item exists, returns null.
      */
-    public Generic removeFirst() {
+    public T removeFirst() {
         StuffNode p = sentinel.next;
         sentinel.next = p.next;
         p.next.prev = sentinel;
@@ -113,7 +113,7 @@ public class LinkedListDeque<Generic> {
      * Removes and returns the last item in this deque.
      * If no such item exists, returns null.
      */
-    public Generic removeLast() {
+    public T removeLast() {
         StuffNode p = sentinel.prev;
         p.prev.next = sentinel;
         sentinel.prev = p.prev;
@@ -124,7 +124,7 @@ public class LinkedListDeque<Generic> {
      * Returns the item at the given index, where 0 is the front, 1 is the next item, and so forth.
      * If no such item exists, returns null.
      */
-    public Generic get(int index) {
+    public T get(int index) {
         StuffNode p = sentinel.next;
         while (index != 0) {
             if (p.item == null) {
@@ -139,14 +139,14 @@ public class LinkedListDeque<Generic> {
     /**
      * Implements get() using recursion.
      */
-    public Generic getRecursive(int index) {
+    public T getRecursive(int index) {
         return getRecursionHelper(sentinel.next, index);
     }
 
     /**
      * A helper method of getRecursion().
      */
-    private Generic getRecursionHelper(StuffNode s, int index) {
+    private T getRecursionHelper(StuffNode s, int index) {
         if (index == 0) {
             return s.item;
         } else if (s.item == null) {
