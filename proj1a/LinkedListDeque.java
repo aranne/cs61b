@@ -139,7 +139,7 @@ public class LinkedListDeque<Generic> {
     /**
      * Implements get() using recursion.
      */
-    public Generic getRecursion(int index) {
+    public Generic getRecursive(int index) {
         return getRecursionHelper(sentinel.next, index);
     }
 
