@@ -85,14 +85,7 @@ public class IntList {
         if (A == null) {
             return B;
         }
-        if (B == null) {
-            return A;
-        }
-        IntList pta = A;
-        while (pta.rest != null) {
-            pta = pta.rest;
-        }
-        pta.rest = B;
+        A.rest = dcatenate(A.rest, B);
         return A;
     }
 
@@ -102,32 +95,10 @@ public class IntList {
      */
     public static IntList catenate(IntList A, IntList B) {
         //TODO:  fill in method
-        IntList newlist;
-        if (A == null && B == null) {
-            return null;
-        } else if (A == null) {
-            return newIntList(B);
-        } else if (B == null) {
-            return newIntList(A);
-        } else {
-            newlist = newIntList(A);
-            return dcatenate(newlist, B);
+        if (A == null) {
+            return B;
         }
-    }
-
-    /**
-     * Returns a new list, not a null.
-     */
-    public static IntList newIntList(IntList A) {
-        IntList newlist = new IntList(A.first, null);
-        IntList ptn = newlist;
-        A = A.rest;
-        while (A != null) {
-            ptn.rest = new IntList(A.first, null);
-            ptn = ptn.rest;
-            A = A.rest;
-        }
-        return newlist;
+        return new IntList(A.first, catenate(A.rest, B));
     }
 
     /**
@@ -136,7 +107,18 @@ public class IntList {
      * as an input, returns null.
      */
     public static IntList reverse(IntList A) {
-
+        if (A == null) {
+            return null;
+        }
+        IntList R = null;
+        IntList tmp;
+        while (A != null) {
+            tmp = A.rest;
+            A.rest = R;
+            R = A;
+            A = tmp;
+        }
+        return R;
     }
 
 

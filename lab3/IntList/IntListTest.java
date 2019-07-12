@@ -66,7 +66,7 @@ public class IntListTest {
         assertEquals(IntList.of(1, 2, 3), A);
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void testReverse() {
         assertNull(IntList.reverse(null));
         IntList A = IntList.of(1, 3, 4, 2);
