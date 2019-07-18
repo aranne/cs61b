@@ -13,7 +13,7 @@ public class LinkedListDeque<Item> implements Deque<Item> {
         private StuffNode next;
         private StuffNode prev;
 
-        public StuffNode(StuffNode p, Item i, StuffNode n) {
+        private StuffNode(StuffNode p, Item i, StuffNode n) {
             prev = p;
             item = i;
             next = n;
