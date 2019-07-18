@@ -23,14 +23,14 @@ public class Palindrome {
      * first points to the first item in deque.
      * last points to the last item in deque.
      */
-    private boolean helpIsPalindrome(Deque deque, int first, int last) {
+    private boolean helpIsPalindrome(Deque<Character> deque, int first, int last) {
         if (deque.isEmpty()) {
             return true;
         }
         if (first >= last) {
             return true;
         }
-        if (deque.get(first) != deque.get(last)) {
+        if (deque.removeFirst() != deque.removeLast()) {
             return false;
         }
         return helpIsPalindrome(deque, first + 1, last - 1);
