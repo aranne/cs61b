@@ -15,19 +15,24 @@ public class Palindrome {
     /** Returns true if the given word is a palindrome, false otherwise. */
     public boolean isPalindrome(String word) {
         Deque<Character> d = wordToDeque(word);
-        if (d.isEmpty()) {
-            return true;
-        } else {
-            int first = 0;
-            int last = d.size() - 1;
-            while (first <= last) {
-                if (d.get(first) != d.get(last)) {
-                    return false;
-                }
-                first += 1;
-                last -= 1;
-            }
+        return helpIsPalindrome(d, 0, d.size() - 1);
+    }
+
+    /**
+     * A helper function to check palindrome.
+     * first points to the first item in deque.
+     * last points to the last item in deque.
+     */
+    private boolean helpIsPalindrome(Deque deque, int first, int last) {
+        if (deque.isEmpty()) {
             return true;
         }
+        if (first >= last) {
+            return true;
+        }
+        if (deque.get(first) != deque.get(last)) {
+            return false;
+        }
+        return helpIsPalindrome(deque, first + 1, last - 1);
     }
 }
