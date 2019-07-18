@@ -1,5 +1,4 @@
 public class Palindrome {
-
     /**
      * Given a String, returns a Deque where the characters appear
      * in the same order as in the String.
@@ -14,8 +13,8 @@ public class Palindrome {
 
     /** Returns true if the given word is a palindrome, false otherwise. */
     public boolean isPalindrome(String word) {
-        Deque<Character> d = wordToDeque(word);
-        return helpIsPalindrome(d);
+        Deque<Character> deque = wordToDeque(word);
+        return helpIsPalindrome(deque);
     }
 
     /**
