@@ -1,6 +1,6 @@
 /** A client that uses the synthesizer package to replicate a plucked guitar string sound */
 import synthesizer.GuitarString;
-import java.io.*;
+import java.io.IOException;
 public class GuitarHero {
     /** Returns a GuitarString corresponding to the index in the piano keyboard. */
     private static GuitarString getGuitarString(char key) throws IOException {
