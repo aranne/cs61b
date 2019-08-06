@@ -45,6 +45,9 @@ public class Percolation {
 
     /** open the site (row, col) if it is not open already. */
     public void open(int row, int col) {
+        if (!(row >= 0 && row < size) || !(col >= 0 && col < size)) {
+            throw new IndexOutOfBoundsException();
+        }
         if (!isOpen(row, col)) {
             table[row][col] = true;
             openNumber += 1;
@@ -75,11 +78,17 @@ public class Percolation {
 
     /** Return true if the site (row, col) is open. */
     public boolean isOpen(int row, int col) {
+        if (!(row >= 0 && row < size) || !(col >= 0 && col < size)) {
+            throw new IndexOutOfBoundsException();
+        }
         return table[row][col];
     }
 
     /** Return true if the site (row, col) is full. */
     public boolean isFull(int row, int col) {
+        if (!(row >= 0 && row < size) || !(col >= 0 && col < size)) {
+            throw new IndexOutOfBoundsException();
+        }
         return isOpen(row, col) && ufTable.connected(xyTo1D(row, col), size * size);
     }
 
@@ -90,7 +99,7 @@ public class Percolation {
 
     /** Returns true if the system percolates. */
     public boolean percolates() {
-        return false;
+        return ufTable.connected(size * size, size * size + 1);
     }
 
 
@@ -114,5 +123,10 @@ public class Percolation {
 
         System.out.println("### Test numberOfOpenSites()");
         System.out.println(p.numberOfOpenSites());
+
+        System.out.println("### Test percolates()");
+        System.out.println(p.percolates());
+        p.open(3, 2);
+        System.out.println(p.percolates());
     }
 }
