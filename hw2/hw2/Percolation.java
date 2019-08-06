@@ -15,29 +15,17 @@ public class Percolation {
         if (N <= 0) {
             throw new IllegalArgumentException();
         }
-        // its default value will be false.
+        // array's default value will be false.
         table = new boolean[N][N];
-        // Create a UnionFind to track union situations.
+        /* Create a UnionFind to track union situations.
+        (size * size) site means the virtual top site,
+        (size * size + 1) site means the virtual bottom site.
+        connect all sites at the top row to the virtual top site,
+        connect all sites at the bottom row to the virtual bottom site.
+         */
         ufTable = new WeightedQuickUnionUF(N * N + 2);
-        /* (N*N) site means the virtual top site,
-           which connects to all sites in the top row.
-         */
-        for (int i = 0; i < N; i += 1) {
-            ufTable.union(i, N * N);
-        }
-        /*  (N*N + 1) site means the virtual bottom site,
-            which connects to all sites in the bottom row.
-         */
-        for (int i = N * N - N; i < N * N; i += 1) {
-            ufTable.union(i, N * N + 1);
-        }
+        // ufTopOnly doesn't have virtual bottom site.
         ufTopOnly = new WeightedQuickUnionUF(N * N + 1);
-        /* (N*N) site means the virtual top site,
-           which connects to all sites in the top row.
-         */
-        for (int i = 0; i < N; i += 1) {
-            ufTopOnly.union(i, N * N);
-        }
         size = N;
         openNumber = 0;
     }
@@ -60,8 +48,19 @@ public class Percolation {
         if (!isOpen(row, col)) {
             table[row][col] = true;
             openNumber += 1;
-            // Connect to neighbor sites.
             int n = xyTo1D(row, col);
+
+            // Connect to virtual top site and virtual bottom site.
+            if (row == 0) {
+                ufTable.union(n, size * size);
+                ufTopOnly.union(n, size * size);
+            }
+            if (row == size - 1) {
+                ufTable.union(n, size * size + 1);
+            }
+
+            // Connect to neighbor sites.
+
             if (row > 0) {
                 if (isOpen(row - 1, col)) {
                     ufTable.union(n, xyTo1D(row - 1, col));
