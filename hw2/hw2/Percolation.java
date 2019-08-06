@@ -83,7 +83,7 @@ public class Percolation {
             if (col < size - 1) {
                 if (isOpen(row, col + 1)) {
                     ufTable.union(n, xyTo1D(row, col + 1));
-                    ufTopOnly.union(n, xyTo1D(row, col - 1));
+                    ufTopOnly.union(n, xyTo1D(row, col + 1));
                 }
             }
         }
