@@ -4,16 +4,16 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 /** Using UnionFind data structure to simulate percolation. */
 public class Percolation {
-    private WeightedQuickUnionUF ufTable;
     private boolean[][] table;
+    private WeightedQuickUnionUF ufTable;
     private int size;
+    private int openNumber;
 
     /** Create N-by-N grid, with all sites initially blocked. */
     public Percolation(int N) {
         if (N <= 0) {
             throw new IllegalArgumentException();
         }
-        size = N;
         table = new boolean[N][N];
         for (boolean[] bs : table) {     // All sites are blocked initially.
             for (boolean b : bs) {
@@ -34,6 +34,8 @@ public class Percolation {
         for (int i = N * N - N; i < N * N; i += 1) {
             ufTable.union(i, N * N + 1);
         }
+        size = N;
+        openNumber = 0;
     }
 
     /** Convert 2-Dimensional coordinate to 1-Dimensional coordinate. */
@@ -45,6 +47,7 @@ public class Percolation {
     public void open(int row, int col) {
         if (!isOpen(row, col)) {
             table[row][col] = true;
+            openNumber += 1;
             // Connect to neighbor sites.
             int n = xyTo1D(row, col);
             if (row > 0) {
@@ -82,7 +85,7 @@ public class Percolation {
 
     /** Returns the number of opened sites. */
     public int numberOfOpenSites() {
-        return 0;
+        return openNumber;
     }
 
     /** Returns true if the system percolates. */
@@ -108,5 +111,8 @@ public class Percolation {
         p.open(0,3);
         System.out.println(p.isFull(0, 3));
         System.out.println(p.isFull(2, 2));
+
+        System.out.println("### Test numberOfOpenSites()");
+        System.out.println(p.numberOfOpenSites());
     }
 }
