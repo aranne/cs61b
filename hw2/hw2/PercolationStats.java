@@ -21,7 +21,9 @@ public class PercolationStats {
             while (!p.percolates()) {
                 int row = StdRandom.uniform(0, N);
                 int col = StdRandom.uniform(0, N);
-                p.open(row, col);
+                if (!p.isOpen(row, col)) {
+                    p.open(row, col);
+                }
             }
             data[i] = (double) p.numberOfOpenSites() / (N * N);
         }
@@ -49,7 +51,7 @@ public class PercolationStats {
 
     public static void main(String[] args) {
         PercolationFactory pf = new PercolationFactory();
-        PercolationStats ps = new PercolationStats(5, 40, pf);
+        PercolationStats ps = new PercolationStats(800, 50, pf);
         System.out.println(ps.mean());
         System.out.println(ps.stddev());
         System.out.println(ps.confidenceLow());
