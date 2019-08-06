@@ -100,10 +100,11 @@ public class Percolation {
         validate(row, col);
         /* When use ufTopOnly to indicate whether this site is connected to the virtual top site.
         Because if we use ufTable, there will be backwash. What is backwash?
-        When the system is already percolated and we open some other sites from the bottom, these sites
-        will be full because the virtual top site, virtual bottom site and these sites are all connected.
-        However, these sites shouldn't be full, so we remove the virtual bottom site (using ufTopOnly) to
-        avoid backwash.
+        When the system is already percolated and we open some other sites from the bottom,
+        these sites will be full because
+        the virtual top site, virtual bottom site and these sites are all connected.
+        However, these sites shouldn't be full,
+        so we remove the virtual bottom site (using ufTopOnly) to avoid backwash.
          */
         return isOpen(row, col) && ufTopOnly.connected(xyTo1D(row, col), size * size);
     }
@@ -123,7 +124,7 @@ public class Percolation {
 
     public static void main(String[] args) {
         Percolation p = new Percolation(4);
-        p.open(2,2);
+        p.open(2, 2);
         p.open(0, 1);
 
         System.out.println("#### Test isOpen()");
@@ -133,7 +134,7 @@ public class Percolation {
         System.out.println("#### Test isFull()");
         p.open(1, 1);
         p.open(1, 2);
-        p.open(0,3);
+        p.open(0, 3);
         System.out.println(p.isFull(0, 3));
         System.out.println(p.isFull(2, 2));
 
