@@ -170,6 +170,21 @@ public class TestMyHashMap {
         assertEquals(hm.size(), 4);
     }
 
+    @Test
+    public void iteratorTest() {
+        MyHashMap<String, Integer> hm = new MyHashMap<>();
+        hm.put("a", 1);
+        hm.put("b", 2);
+        hm.put("c", 3);
+        hm.put("d", 4);
+        hm.put("e", 5);
+        hm.put("f", 6);
+        for (String s : hm) {
+            System.out.print(s + " ");
+            System.out.println(hm.get(s));
+        }
+    }
+
     public static void main(String[] args) {
         jh61b.junit.TestRunner.runTests(TestMyHashMap.class);
     }
