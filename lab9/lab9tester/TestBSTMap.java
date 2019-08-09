@@ -137,10 +137,23 @@ public class TestBSTMap {
         b.put("a", 3);
         b.put("i", 4);
         b.put("u", 5);
+        b.remove("hi");
         for (String s : b) {
             System.out.print(s + " ");
             System.out.println(b.get(s));
         }
+    }
+
+    @Test
+    public void printInOrderTest() {
+        BSTMap<String, Integer> b = new BSTMap<>();
+        b.put("hi", 1);
+        b.put("k", 2);
+        b.put("a", 3);
+        b.put("i", 4);
+        b.put("u", 5);
+        b.remove("hi", 1);
+        b.printInOrder();
     }
 
     public static void main(String[] args) {

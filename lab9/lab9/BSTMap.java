@@ -28,6 +28,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
     private Node root;  /* Root node of the tree. */
     private int size; /* The number of key-value pairs in the tree */
+    private Set<K> keySet;
 
     /* Creates an empty BSTMap. */
     public BSTMap() {
@@ -39,6 +40,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     public void clear() {
         root = null;
         size = 0;
+        keySet = new HashSet<>();
     }
 
     /** Returns the value mapped to by KEY in the subtree rooted in P.
@@ -75,6 +77,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     private Node putHelper(K key, V value, Node p) {
         if (p == null) {
             size += 1;
+            keySet.add(key);
             return new Node(key, value);
         }
         int cmp = key.compareTo(p.key);
@@ -111,23 +114,10 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
     //////////////// EVERYTHING BELOW THIS LINE IS OPTIONAL ////////////////
 
-    /** Returns a Set view of the keys contained in BSTMap rooted in p. */
-    private Set<K> keySetHelper(Node p) {
-        Set<K> keySet = new HashSet<>();
-        if (p == null) {
-            return keySet;       // Can't return null. We should return an empty Set.
-        }
-        keySet.add(p.key);
-        keySet.addAll(keySetHelper(p.left));
-        keySet.addAll(keySetHelper(p.right));
-        return keySet;
-
-    }
-
     /** Returns a Set view of the keys contained in this map. */
     @Override
     public Set<K> keySet() {
-        return keySetHelper(root);
+        return keySet;
     }
 
     /** A result-pair of Node and returnValue. */
@@ -159,6 +149,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         } else {
             returnValue = p.value;
             size -= 1;
+            keySet.remove(key);
             if (p.left == null && p.right == null) {
                 return new Result(null, returnValue);
             } else if (p.left == null) {
@@ -173,7 +164,10 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
                 p.key = temp.key;
                 p.value = temp.value;
                 p.right = removeHelper(p.key, p.right).node;
-                size += 1;          // Because we use remove() method once more, size--, so we need size++.
+                // Because we use remove() method once more, size--, so we need size++.
+                size += 1;
+                // Because we use remove() method once more, keySet.remove(), so we need keySet.add()
+                keySet.add(p.key);
             }
         }
         return new Result(p, returnValue);
@@ -214,6 +208,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             if (p.value.equals(value)) {
                 returnValue = p.value;
                 size -= 1;
+                keySet.remove(key);
                 if (p.left == null && p.right == null) {
                     return new Result(null, returnValue);
                 } else if (p.left == null) {
@@ -229,7 +224,10 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
                     p.value = temp.value;
                     // Using removeHelper() instead of removePairHelper()
                     p.right = removeHelper(p.key, p.right).node;
-                    size += 1;       // Because we use remove() method once more, size--, so we need size++.
+                    // Because we use remove() method once more, size--, so we need size++.
+                    size += 1;
+                    // Because we use remove() once more, keySet.remove(), so we need keySet.add()
+                    keySet.add(p.key);
                 }
             } else {
                 returnValue = null;
@@ -256,5 +254,33 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     @Override
     public Iterator<K> iterator() {
         return keySet().iterator();
+    }
+
+
+    /** Prints the BSTMap in order from smaller to larger Key. */
+    public void printInOrder() {
+        printInOrder(root);
+    }
+
+    private void printInOrder(Node p) {
+        if (p.left == null & p.right == null) {
+            printNode(p);
+        } else if (p.left == null) {
+            printNode(p);
+            printInOrder(p.right);
+        } else if (p.right == null) {
+            printInOrder(p.left);
+            printNode(p);
+        } else {
+            printInOrder(p.left);
+            printNode(p);
+            printInOrder(p.right);
+        }
+    }
+
+    /** Prints this node with its Key and Value. */
+    private void printNode(Node p) {
+        System.out.print(p.key + " ");
+        System.out.println(p.value);
     }
 }

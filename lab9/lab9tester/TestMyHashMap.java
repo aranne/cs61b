@@ -179,6 +179,7 @@ public class TestMyHashMap {
         hm.put("d", 4);
         hm.put("e", 5);
         hm.put("f", 6);
+        hm.remove("a", 1);
         for (String s : hm) {
             System.out.print(s + " ");
             System.out.println(hm.get(s));
