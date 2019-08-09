@@ -138,6 +138,38 @@ public class TestMyHashMap {
         assertEquals((int)hm.get("a"), 1);
     }
 
+    @Test
+    public void removeTest() {
+        MyHashMap<String, Integer> hm = new MyHashMap<>();
+        hm.put("a", 1);
+        hm.put("b", 2);
+        hm.put("c", 3);
+        hm.put("d", 4);
+        hm.put("e", 5);
+        hm.put("f", 6);
+        assertNull(hm.remove("ppp"));
+        assertEquals((int) hm.remove("c"), 3);
+        assertEquals((int) hm.remove("f"), 6);
+        assertEquals(hm.size(), 4);
+    }
+
+    @Test
+    public void removePairTest() {
+        MyHashMap<String, Integer> hm = new MyHashMap<>();
+        hm.put("a", 1);
+        hm.put("b", 2);
+        hm.put("c", 3);
+        hm.put("d", 4);
+        hm.put("e", 5);
+        hm.put("f", 6);
+        assertNull(hm.remove("ppp"));
+        assertEquals((int) hm.remove("c"), 3);
+        assertNull(hm.remove("d", 1));
+        assertEquals(hm.size(), 5);
+        assertEquals((int) hm.remove("d", 4), 4);
+        assertEquals(hm.size(), 4);
+    }
+
     public static void main(String[] args) {
         jh61b.junit.TestRunner.runTests(TestMyHashMap.class);
     }
