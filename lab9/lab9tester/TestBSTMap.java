@@ -80,10 +80,67 @@ public class TestBSTMap {
     //assumes get/containskey work
     @Test
     public void sanityPutTest() {
-        BSTMap<String, Integer> b = new BSTMap<String, Integer>();
+        BSTMap<String, Integer> b = new BSTMap<>();
         b.put("hi", 1);
         assertTrue(b.containsKey("hi"));
         assertTrue(b.get("hi") != null);
+    }
+
+    @Test
+    public void sanityKeySetTest() {
+        BSTMap<String, Integer> b = new BSTMap<>();
+        b.put("hi", 1);
+        b.put("k", 2);
+        b.put("a", 3);
+        b.put("i", 4);
+        b.put("u", 5);
+        System.out.println(b.keySet());
+    }
+
+    @Test
+    public void sanityRemoveTest() {
+        BSTMap<String, Integer> b = new BSTMap<>();
+        b.put("hi", 1);
+        b.put("k", 2);
+        b.put("a", 3);
+        b.put("i", 4);
+        b.put("u", 5);
+        assertEquals(b.size(), 5);
+        assertNull(b.remove("ppp"));
+        assertEquals((int) b.remove("hi"), 1);
+        assertEquals((int) b.remove("u"), 5);
+        assertEquals(b.size(), 3);
+
+    }
+
+    @Test
+    public void sanityRemovePairTest() {
+        BSTMap<String, Integer> b = new BSTMap<>();
+        b.put("hi", 1);
+        b.put("k", 2);
+        b.put("a", 3);
+        b.put("i", 4);
+        b.put("u", 5);
+        assertNull(b.remove("ppp"));
+        assertEquals((int) b.remove("hi", 1), 1);
+        assertNull(b.remove("u", 1));
+        assertEquals(b.size(), 4);
+        assertEquals((int) b.remove("u", 5), 5);
+        assertEquals(b.size(), 3);
+    }
+
+    @Test
+    public void sanityIteratorTest() {
+        BSTMap<String, Integer> b = new BSTMap<>();
+        b.put("hi", 1);
+        b.put("k", 2);
+        b.put("a", 3);
+        b.put("i", 4);
+        b.put("u", 5);
+        for (String s : b) {
+            System.out.print(s + " ");
+            System.out.println(b.get(s));
+        }
     }
 
     public static void main(String[] args) {
