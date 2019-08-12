@@ -79,8 +79,8 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
 
 
     /**
-     * Returns the index of the node with smaller priority. Precondition: not
-     * both nodes are null.
+     * Returns the index of the node with smaller priority.
+     * Precondition: not both nodes are null.
      */
     private int min(int index1, int index2) {
         Node node1 = getNode(index1);
@@ -128,6 +128,11 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         int leftIndex = leftIndex(index);
         int rightIndex = rightIndex(index);
         if (index == min(index, leftIndex) && index == min(index, rightIndex)) {
+            return;
+        }
+        // When the node comes at the bottom.
+        // left child and right child cannot both be null so that min(index1, index2) will be invalid.
+        if (leftIndex > size && rightIndex > size) {
             return;
         }
         int smallerIndex = min(leftIndex, rightIndex);
