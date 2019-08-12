@@ -10,26 +10,36 @@ public class SimpleOomage implements Oomage {
     protected int blue;
 
     private static final double WIDTH = 0.01;
-    private static final boolean USE_PERFECT_HASH = false;
+    private static final boolean USE_PERFECT_HASH = true;
 
     @Override
     public boolean equals(Object o) {
-        // TODO: Write this method.
-        return false;
+        if (o == this) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (o.getClass() != this.getClass()) {
+            return false;
+        }
+        SimpleOomage o1 = (SimpleOomage) o;
+        return red == o1.red && green == o1.green && blue == o1.blue;
     }
 
-    /* Uncomment this method after you've written
-       equals and failed the testHashCodeAndEqualsConsistency
-       test.
     @Override
     public int hashCode() {
         if (!USE_PERFECT_HASH) {
             return red + green + blue;
         } else {
-            // TODO: Write a perfect hash function for Simple Oomages.
-            return 0;
+            // Write a perfect hash function for Simple Oomages.
+            // To avoid the hashCode is a multiple of 5, divide red, green, blue values by 5 first.
+            int testRed = red / 5;
+            int testGreen = green / 5;
+            int testBlue = blue / 5;
+            return (((testRed * 31) + testGreen) * 31) + testBlue;
         }
-    }*/
+    }
 
     public SimpleOomage(int r, int g, int b) {
         if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255) {
@@ -64,6 +74,7 @@ public class SimpleOomage implements Oomage {
         randomSimpleOomage().draw(0.75, 0.25, 1);
     }
 
+    @Override
     public String toString() {
         return "R: " + red + ", G: " + green + ", B: " + blue;
     }
