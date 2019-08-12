@@ -184,7 +184,10 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         // nulling out the dead item.
         contents[size] = null;
         size -= 1;
-        sink(1);
+        // If there's an empty heap, sink() nothing.
+        if (size > 0) {
+            sink(1);
+        }
         return returnItem;
     }
 
@@ -413,6 +416,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         pq.insert("c", 3);
         pq.insert("d", 4);
         String removed = pq.removeMin();
+        System.out.println(pq);
         assertEquals("a", removed);
         assertEquals(9, pq.size());
         assertEquals("b", pq.contents[1].myItem);
@@ -443,9 +447,17 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         int i = 0;
         String[] expected = {"a", "b", "c", "c", "d", "d", "e", "g", "h", "i"};
         while (pq.size() > 1) {
+            assertEquals(10 - i, pq.size());
             assertEquals(expected[i], pq.removeMin());
             i += 1;
         }
+    }
+
+    @Test
+    public void testCornerCase() {
+        ExtrinsicPQ<String> pq = new ArrayHeap<>();
+        pq.insert("c", 3);
+        pq.removeMin();
     }
 
 }
