@@ -104,18 +104,18 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         // Throws an exception if index is invalid. DON'T CHANGE THIS LINE.
         // index cannot be 0. So our recursion should stop at parentIndex == 0.
         validateSinkSwimArg(index);
-
-        int parentIndex = parentIndex(index);
-        Node parent = getNode(parentIndex);
-        if (parent == null) {
-            return;
+        while (index > 0) {
+            if (index == 1) {
+                return;
+            }
+            int parentIndex = parentIndex(index);
+            int smallerIndex = min(index, parentIndex);
+            if (smallerIndex == parentIndex) {
+                return;
+            }
+            swap(index, parentIndex);
+            index = parentIndex;
         }
-        int smallerIndex = min(index, parentIndex);
-        if (smallerIndex == parentIndex) {
-            return;
-        }
-        swap(index, parentIndex);
-        swim(parentIndex);
     }
 
     /**
@@ -124,20 +124,17 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     private void sink(int index) {
         // Throws an exception if index is invalid. DON'T CHANGE THIS LINE.
         validateSinkSwimArg(index);
-
-        int leftIndex = leftIndex(index);
-        int rightIndex = rightIndex(index);
-        if (index == min(index, leftIndex) && index == min(index, rightIndex)) {
-            return;
+        while (leftIndex(index) <= size) {
+            int leftIndex = leftIndex(index);
+            int rightIndex = rightIndex(index);
+            // If right child is null, the smallerIndex will be leftIndex.
+            int smallerIndex = min(leftIndex, rightIndex);
+            if (index == min(index, smallerIndex)) {
+                return;
+            }
+            swap(index, smallerIndex);
+            index = smallerIndex;
         }
-        // When the node comes at the bottom.
-        // left child and right child cannot both be null so that min(index1, index2) will be invalid.
-        if (leftIndex > size && rightIndex > size) {
-            return;
-        }
-        int smallerIndex = min(leftIndex, rightIndex);
-        swap(index, smallerIndex);
-        sink(smallerIndex);
     }
 
     /**
@@ -210,7 +207,13 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     public void changePriority(T item, double priority) {
         for (int i = 1; i <= size; i += 1) {
             if (contents[i].myItem.equals(item)) {
+                double oldPriority = contents[i].myPriority;
                 contents[i].myPriority = priority;
+                if (oldPriority < priority) {
+                    sink(i);
+                } else {
+                    swim(i);
+                }
             }
         }
     }
