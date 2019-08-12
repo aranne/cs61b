@@ -32,12 +32,15 @@ public class SimpleOomage implements Oomage {
         if (!USE_PERFECT_HASH) {
             return red + green + blue;
         } else {
-            // Write a perfect hash function for Simple Oomages.
-            // To avoid the hashCode is a multiple of 5, divide red, green, blue values by 5 first.
+            /* Write a perfect hash function for Simple Oomages.
+             To avoid the hashCode is a multiple of 5, divide red, green, blue values by 5 first.
+             There're 255 possible values here, dividing 5, then there're 51 remaining values.
+             So we choose a prime number 53.
+            */
             int testRed = red / 5;
             int testGreen = green / 5;
             int testBlue = blue / 5;
-            return (((testRed * 31) + testGreen) * 31) + testBlue;
+            return (((testRed * 53) + testGreen) * 53) + testBlue;
         }
     }
 
