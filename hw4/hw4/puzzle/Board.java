@@ -101,8 +101,7 @@ public class Board implements WorldState {
     private boolean isWrongPos(int tile, int y, int x) {
         int xx, yy;
         if (tile == BLANK) {
-            xx = size - 1;
-            yy = size - 1;
+            return false;
         } else {
             xx = (tile - 1) % size;
             yy = (tile - 1) / size;
@@ -123,8 +122,7 @@ public class Board implements WorldState {
     private int manhattanDistance(int tile, int y, int x) {
         int xx, yy;
         if (tile == BLANK) {
-            xx = size - 1;
-            yy = size - 1;
+            return 0;
         } else {
             xx = (tile - 1) % size;
             yy = (tile - 1) / size;
@@ -164,6 +162,11 @@ public class Board implements WorldState {
             }
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return estimatedDistanceToGoal();
     }
 
     /** Returns the string representation of the board. 
